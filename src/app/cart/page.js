@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link"; // ✅ Ensure Link is used for navigation
 import Navbar from "../../components/Navbar"; // Import the navbar
+import Image from "next/image";
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
@@ -42,7 +43,7 @@ export default function CartPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {cartItems.map((item) => (
               <div key={item.Id} className="bg-white shadow-md p-4 rounded-lg border border-black">
-                <img src={item.ImageUrl} alt={item.Name} className="w-full h-48 object-contain rounded-md" />
+                <Image src={item.ImageUrl} alt={item.Name} className="w-full h-48 object-contain rounded-md" />
                 <h2 className="text-lg font-bold mt-2 text-black">{item.Name}</h2>
                 <p className="text-gray-600">{item.Price} SEK</p>
 

@@ -31,7 +31,7 @@ export default function ContactPage() {
 
       <main className="flex-1 container mx-auto py-24 px-6">
         <h2 className="text-3xl font-bold text-center text-black">Contact Us</h2>
-        <p className="text-center text-gray-600 mt-2">We'd love to hear from you!</p>
+        <p className="text-center text-gray-600 mt-2">We&apos;d love to hear from you!</p>
 
         {/* Contact Form */}
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-gray-100 p-6 rounded-md shadow-md">

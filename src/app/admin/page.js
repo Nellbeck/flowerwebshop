@@ -12,7 +12,7 @@ export default function AdminPage() {
     if (localStorage.getItem("isAdmin") === "true") {
       router.push("/admin/upload");
     }
-  }, []);
+  }, [router]);
 
   const handleLogin = () => {
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD; // Change this!

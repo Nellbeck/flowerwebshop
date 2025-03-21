@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function AdminUpload() {
   const [image, setImage] = useState(null);
@@ -125,7 +126,7 @@ export default function AdminUpload() {
         {products.map((product) => (
           <div key={product.Id} className="border p-4 rounded-lg flex items-center justify-between">
             {/* Image */}
-            <img src={product.ImageUrl} alt={product.Name} className="w-20 h-20 object-cover rounded-lg mr-4" />
+            <Image src={product.ImageUrl} alt={product.Name} className="w-20 h-20 object-cover rounded-lg mr-4" />
             {/* Product Info */}
             <div className="flex-1">
               <p className="font-bold">{product.Name}</p>
