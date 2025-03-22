@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    output: 'standalone' // Ensures Next.js builds a fully packaged app
-  };
+const nextConfig = {};
   
   export default nextConfig;
   

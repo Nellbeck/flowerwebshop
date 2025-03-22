@@ -81,7 +81,7 @@ export default function Home() {
 
             return (
               <div key={product.Id} className="bg-white shadow-md p-4 rounded-lg border border-black">
-                <Image src={product.ImageUrl} alt={product.Name} className="w-full h-48 object-contain rounded-md"/>
+                <img src={product.ImageUrl} alt={product.Name} className="w-full h-48 object-contain rounded-md"/>
                 <h4 className="text-lg font-bold mt-2 text-black">{product.Name}</h4>
                 <p className="text-gray-600 mt-1">{product.Description}</p>
                 <p className="text-gray-600">{product.Price} SEK</p>
