@@ -12,15 +12,7 @@ on:
 jobs:
   build:
     runs-on: 'ubuntu-latest'
-    env:
-      NEXT_PUBLIC_ADMIN_USERNAME: ${{ secrets.NEXT_PUBLIC_ADMIN_USERNAME }}
-      NEXT_PUBLIC_ADMIN_PASSWORD: ${{ secrets.NEXT_PUBLIC_ADMIN_PASSWORD }}
-      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      AZURE_STORAGE_CONTAINER_NAME: f${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+
     steps:
     - uses: actions/checkout@v2
 
@@ -31,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_04b9ca8a149d43d0b0af12de2d48a9c4 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_325458d975c44903af2850bee19548ee }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_a170333afc15403f87be94484c76ff0d }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_2cef1f414c694e05bbf60dea082d64b1 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_04b9ca8a149d43d0b0af12de2d48a9c4 }}/appsvc/staticsite:${{ github.sha }}
+        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_a170333afc15403f87be94484c76ff0d }}/appsvc/staticsite:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -53,7 +45,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'flowershopweb'
+        app-name: 'FlowerShopWeb'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_e11766e6f7374de7a9f224cbee5cd138 }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_04b9ca8a149d43d0b0af12de2d48a9c4 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_83cb07fbf1b742f08cde0cc6c806cc38 }}
+        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_a170333afc15403f87be94484c76ff0d }}/appsvc/staticsite:${{ github.sha }}'
