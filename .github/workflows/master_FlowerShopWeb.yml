@@ -53,7 +53,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'FlowerShopWeb'
+        app-name: 'flowershopweb'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_e11766e6f7374de7a9f224cbee5cd138 }}
         images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_04b9ca8a149d43d0b0af12de2d48a9c4 }}/appsvc/staticsite:${{ github.sha }}'
