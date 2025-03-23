@@ -71,4 +71,4 @@ jobs:
           app-name: 'blaklinten'
           slot-name: 'Production'
           package: .  
-          
+          startup-command: 'node .next/standalone/server.js'
