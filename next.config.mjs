@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: "standalone",
-    env: {
-        PORT: process.env.PORT || 8080, // Ensure the app picks up Azure's port
-      },
+    assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX || "",
   };
   
   export default nextConfig;
