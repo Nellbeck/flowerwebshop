@@ -85,3 +85,27 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
         }
     }
+    
+    // ✅ GET: Fetch a single product
+    export async function GET(req, context) {
+      const params = await context.params; // Ensure params is awaited
+
+      if (!params?.id) {
+        return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+      }
+    
+      try {
+        await sql.connect(config);
+        const result = await sql.query`SELECT * FROM dbo.Products WHERE Id=${params.id}`;
+        await sql.close();
+    
+        if (result.recordset.length === 0) {
+          return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        }
+    
+        return NextResponse.json(result.recordset[0]);
+      } catch (error) {
+        console.error("Database error:", error);
+        return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
+      }
+    }

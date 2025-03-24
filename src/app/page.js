@@ -1,125 +1,112 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar"; // Import the navbar
+import Navbar from "../components/Navbar"; // Import Navbar
+import Footer from "@/components/Footer";
 
 export default function Home() {
+  const [products, setProducts] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [cart, setCart] = useState([]);
 
-    const [products, setProducts] = useState([]);
-    const [cartCount, setCartCount] = useState(0);
-    const [cart, setCart] = useState([]);
-  
-    useEffect(() => {
-      // Fetch products from API
-      fetch("/api/products")
-        .then((res) => res.json())
-        .then((data) => setProducts(Array.isArray(data) ? data : []))
-        .catch((error) => console.error("Error fetching products:", error));
-  
-      // Get cart from localStorage
-      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      setCart(storedCart);
-      updateCartCount(storedCart);
-    }, []);
-  
-    // Update cart count (total items in cart)
-    const updateCartCount = (cart) => {
-      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-      setCartCount(totalCount);
-    };
+  useEffect(() => {
+    // Fetch products from API
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch((error) => console.error("Error fetching products:", error));
 
-    // 🛒 Add or update product quantity
-    const updateQuantity = (productId, change) => {
-      let updatedCart = [...cart];
-      const existingItem = updatedCart.find((item) => item.Id === productId);
-      const product = products.find((p) => p.Id === productId);
+    // Get cart from localStorage
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+    updateCartCount(storedCart);
+  }, []);
 
-      if (!product) return;
+  const updateCartCount = (cart) => {
+    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    setCartCount(totalCount);
+  };
 
-      if (existingItem) {
-        // Increase or decrease quantity
-        existingItem.quantity += change;
+  const updateQuantity = (productId, change) => {
+    let updatedCart = [...cart];
+    const existingItem = updatedCart.find((item) => item.Id === productId);
+    const product = products.find((p) => p.Id === productId);
 
-        // If quantity is 0, remove the product
-        if (existingItem.quantity <= 0) {
-          updatedCart = updatedCart.filter((item) => item.Id !== productId);
-        }
-      } else if (change > 0) {
-        // Add new product if it doesn't exist
-        updatedCart.push({ ...product, quantity: 1 });
+    if (!product) return;
+
+    if (existingItem) {
+      existingItem.quantity += change;
+      if (existingItem.quantity <= 0) {
+        updatedCart = updatedCart.filter((item) => item.Id !== productId);
       }
+    } else if (change > 0) {
+      updatedCart.push({ ...product, quantity: 1 });
+    }
 
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      updateCartCount(updatedCart);
-    };
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    updateCartCount(updatedCart);
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-
-    <Navbar cartCount={cartCount}  />
+    <div className="min-h-screen bg-[#abc1a9]">
+      <Navbar cartCount={cartCount} />
 
       {/* 🔹 Hero Section */}
-      <section className="relative h-[500px] bg-cover bg-center text-white flex items-center justify-center"
-        style={{ backgroundImage: "url('/hero.jpg')" }}>
-        <div className="bg-black/50 p-6 text-center rounded">
-          <h2 className="text-4xl font-bold">Send Flowers with Love</h2>
-          <p className="text-lg mt-2">Beautiful bouquets for every occasion.</p>
+      <section
+        className="relative h-[900px] bg-cover bg-center flex items-center justify-center text-center bg-[#abc1a9]"
+        style={{ backgroundImage: "url('https://static.bonniernews.se/ba/17bfa280-3679-45d8-8383-2168458e3d70.jpeg?width=1400&format=pjpg&auto=webp')" }}
+      >
+        <div className="bg-black/40 p-8 rounded-lg text-white max-w-lg">
+          <h2 className="text-5xl font-bold">Vackra Blommor för Alla Tillfällen</h2>
+          <p className="text-lg mt-2 font-light">Skicka kärlek med noggrant utvalda buketter.</p>
         </div>
       </section>
 
       {/* 🔹 Product Grid */}
-      <main className="container mx-auto py-8 bg-white">
-        <h3 className="text-2xl font-bold mb-4 text-black">Our Bestsellers</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => {
-            const cartItem = cart.find((item) => item.Id === product.Id);
-            const quantity = cartItem ? cartItem.quantity : 0;
-            const stockLeft = product.Stock - quantity;
-
-            return (
-              <div key={product.Id} className="bg-white shadow-md p-4 rounded-lg border border-black">
-                <img src={product.ImageUrl} alt={product.Name} className="w-full h-48 object-contain rounded-md"/>
-                <h4 className="text-lg font-bold mt-2 text-black">{product.Name}</h4>
-                <p className="text-gray-600 mt-1">{product.Description}</p>
-                <p className="text-gray-600">{product.Price} SEK</p>
-
-                {/* 🔹 Show quantity controls after first click */}
-                {quantity > 0 ? (
-                  <div className="mt-2">
-                    <div className="flex items-center justify-center">
-                      <button className="bg-gray-300 px-3 py-1 rounded-l" onClick={() => updateQuantity(product.Id, -1)}>➖</button>
-                      <span className="px-4 text-black">{quantity}</span>
-                      <button 
-                        className={`px-3 py-1 rounded-r ${stockLeft > 0 ? 'bg-gray-300' : 'bg-gray-500 cursor-not-allowed'}`} 
-                        onClick={() => updateQuantity(product.Id, 1)}
-                        disabled={stockLeft <= 0}
-                      >
-                        ➕
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button 
-                    className={`mt-2 px-4 py-2 rounded-md w-full ${product.Stock > 0 ? 'bg-green-600 text-white' : 'bg-gray-400 cursor-not-allowed'}`}
-                    onClick={() => updateQuantity(product.Id, 1)}
-                    disabled={product.Stock <= 0}
-                  >
-                    {product.Stock > 0 ? "Buy Now" : "Out of Stock"}
-                  </button>
-                )}
+      <main className="container mx-auto py-12">
+        <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {products.map((product) => (
+            <Link key={product.Id} href={`/product/${product.Id}`} className="block">
+              <div className="p-6 rounded-lg transform transition-transform hover:scale-105 cursor-pointer">
+                <img
+                  src={product.ImageUrl}
+                  alt={product.Name}
+                  className="w-full h-56 object-cover rounded-md"
+                />
+                <h4 className="text-xl mt-3 text-black text-center">{product.Name}</h4>
+                <p className="text-gray-700 font-medium mt-2 text-center">{product.Price} SEK</p>
               </div>
-            );
-          })}
-          </div>
+            </Link>
+          ))}
+        </div>
       </main>
+      
+      {/* 🔹 Inspiration Section */}
+      <section className="container mx-auto py-12">
+        <h3 className="text-3xl mb-6 text-black text-center"></h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mx-4">
+          <img 
+            src="https://i.pinimg.com/736x/73/41/ea/7341ea159c44b8167930ff88ae920fb2.jpg" 
+            alt="Beautiful flower bouquet"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+          <img 
+            src="https://hitta.florist/images/AWYs27w3vsXMHLI2i5BZmKtaHKf8iB_zGMz6PKQypXB4zYRvjk00RRPXTqtvNy39LshGT4VK65SlgUnCDv8Q28gVTO-dCvn3gCjkyvYNmNXenuStaJvkgf2qz0A_0rm7cjf_rSbLADVGJFgSTr_mJu5Nw2TdtyusHPrNhFlQxR-ISwLS5poY.jpg" 
+            alt="Mix of flowers"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+          <img 
+            src="https://scontent-arn2-1.xx.fbcdn.net/v/t51.75761-15/484766747_18495709378040004_8176556141056771156_n.jpg?stp=dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CApdOrdo-3wQ7kNvgFgd1Vs&_nc_oc=AdnJWAbtyEFZNuiIsfRwWKNOfiWM7JA6jDWr3x_54R5oE4gl5U5lR8QofABBbGKEgYM&_nc_zt=23&_nc_ht=scontent-arn2-1.xx&_nc_gid=WDAQRiMoFNIcJpx9WcXyoQ&oh=00_AYEwyYOVxVVW4uhLAY6Yiw0boktsBYfpb1JxxxrJF3oTjw&oe=67E709F5" 
+            alt="Woman with flowers"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+        </div>
+      </section>
 
-      {/* 🔹 Footer */}
-      <footer className="bg-gray-800 text-white text-center py-4">
-        <p>© 2025 Flower Shop. All rights reserved.</p>
-      </footer>
+      <Footer></Footer>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "../../components/Navbar"; // Import the Navbar
+import Footer from "@/components/Footer";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -72,10 +73,7 @@ export default function ContactPage() {
         </form>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white text-center py-4">
-        <p>© 2025 Flower Shop. All rights reserved.</p>
-      </footer>
+    <Footer></Footer>
     </div>
   );
 }

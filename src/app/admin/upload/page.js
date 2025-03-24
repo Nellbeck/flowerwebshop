@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function AdminUpload() {
   const [image, setImage] = useState(null);
@@ -12,6 +12,19 @@ export default function AdminUpload() {
   const [description, setDescription] = useState(""); // ✅ New state for description
   const [products, setProducts] = useState([]);
   const [editId, setEditId] = useState(null);
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    if (!isAdmin) {
+      router.replace("/admin"); // Redirect to login if not admin
+    } else {
+      setIsAuthenticated(true);
+    }
+    setCheckingAuth(false);
+  }, [router]);
 
   useEffect(() => {
     async function fetchProducts() {
