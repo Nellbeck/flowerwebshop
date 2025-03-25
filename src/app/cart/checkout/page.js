@@ -70,7 +70,6 @@ const getCoordinates = async (address, city, postalCode) => {
       const userLocation = turf.point(coordinates);
       const baseLocation = turf.point(baseOrigin);
       const distance = turf.distance(userLocation, baseLocation, { units: "kilometers" }); // Ensuring it's in kilometers
-      console.log("Distance from base:", distance, "km");
       return distance <= 10; // 10 km radius
     }
     return false;
@@ -82,12 +81,10 @@ const getCoordinates = async (address, city, postalCode) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");  // This should log every time the form is submitted
     setIsSubmitting(true);
   
     // Check if the address is within the valid delivery area
     const isValidAddress = await isWithinDeliveryArea(address, city, postalCode);
-    console.log("Address validity:", isValidAddress);  // Log result of address validity check
   
     if (!isValidAddress) {
       setErrorMessage("Sorry, your address is outside the delivery area.");
