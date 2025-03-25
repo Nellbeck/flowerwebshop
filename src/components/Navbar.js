@@ -5,44 +5,31 @@ import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [cart, setCart] = useState([]);
   const [cartCount, setCartCount] = useState(0);
 
-  // Function to update cart count from localStorage
-  const updateCart = () => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalCount = storedCart.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(totalCount);
-  };
-
-  // 🔄 Listen for cart updates dynamically
+  // Load cart from localStorage on first render
   useEffect(() => {
-    updateCart(); // Initialize cart count on mount
-
-    // ✅ Listen for custom "cartUpdated" event
-    const handleCartUpdate = () => updateCart();
-    window.addEventListener("cartUpdated", handleCartUpdate);
-
-    // ✅ Listen for direct changes to localStorage (incase user updates cart in another tab)
-    const handleStorageChange = (e) => {
-      if (e.key === "cart") updateCart();
+    const loadCart = () => {
+      try {
+        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+        const totalCount = storedCart.reduce((sum, item) => sum + item.quantity, 0);
+        setCartCount(totalCount);
+      } catch (error) {
+        console.error("Error loading cart from localStorage:", error);
+      }
     };
-    window.addEventListener("storage", handleStorageChange);
 
-    return () => {
-      window.removeEventListener("cartUpdated", handleCartUpdate);
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    loadCart();
+
+    // Listen for cart updates from other components
+    window.addEventListener("cartUpdated", loadCart);
+
+    return () => window.removeEventListener("cartUpdated", loadCart);
   }, []);
 
   return (
-    <header className="bg-transparent hover:bg-white transition-colors duration-300 fixed top-0 left-0 w-full z-50">
+    <header className="md:bg-transparent bg-white hover:bg-white transition-colors duration-300 fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto flex justify-between items-center px-6 py-4">
-        {/* Logo */}
-        {/* <h1 className="text-3xl font-serif text-black">
-          <Link href="/">Blåklinten</Link>
-        </h1> */}
-
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-8 text-lg text-gray-700 font-light">
           <Link href="/" className="hover:text-green-500 transition duration-300">Hem</Link>
@@ -92,3 +79,4 @@ export default function Navbar() {
     </header>
   );
 }
+

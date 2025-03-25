@@ -65,7 +65,7 @@ export default function Home() {
       </section>
 
       {/* 🔹 Product Grid */}
-      <main className="container mx-auto py-12">
+      <main className="container mx-auto py-12 border-b border-black">
         <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
@@ -89,8 +89,8 @@ export default function Home() {
         <h3 className="text-3xl mb-6 text-black text-center"></h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mx-4">
           <img 
-            src="https://i.pinimg.com/736x/73/41/ea/7341ea159c44b8167930ff88ae920fb2.jpg" 
-            alt="Beautiful flower bouquet"
+            src="https://static.bonniernews.se/ba/4fc79006-8d62-45cd-9e2b-9319e123543d.jpeg?width=640&format=pjpg&auto=webp" 
+            alt="Beautiful flower bouquet shaped as a heart"
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
           <img 
@@ -100,6 +100,22 @@ export default function Home() {
           />
           <img 
             src="https://scontent-arn2-1.xx.fbcdn.net/v/t51.75761-15/484766747_18495709378040004_8176556141056771156_n.jpg?stp=dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CApdOrdo-3wQ7kNvgFgd1Vs&_nc_oc=AdnJWAbtyEFZNuiIsfRwWKNOfiWM7JA6jDWr3x_54R5oE4gl5U5lR8QofABBbGKEgYM&_nc_zt=23&_nc_ht=scontent-arn2-1.xx&_nc_gid=WDAQRiMoFNIcJpx9WcXyoQ&oh=00_AYEwyYOVxVVW4uhLAY6Yiw0boktsBYfpb1JxxxrJF3oTjw&oe=67E709F5" 
+            alt="Woman with flowers"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+        </div>
+      </section>
+      <section className="container mx-auto py-10">
+        <h3 className="text-3xl mb-6 text-black text-center">Romantik</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mx-4">
+
+          <img 
+            src="https://i.pinimg.com/736x/47/cb/53/47cb5315c8a455eb04a6bfb951af5af0.jpg" 
+            alt="Mix of flowers"
+            className="w-full h-full object-cover rounded-lg shadow-lg"
+          />
+          <img 
+            src="https://i.pinimg.com/736x/73/41/ea/7341ea159c44b8167930ff88ae920fb2.jpg" 
             alt="Woman with flowers"
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />

@@ -19,28 +19,51 @@ export async function PUT(req, { params }) {
     const id = params.id;
     const { name, price, stock, imageUrl, description } = await req.json();
 
-    if (!id || !name || !price || !stock || !imageUrl) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    // Check if we're doing a full update or just a stock update
+    if (name || price || imageUrl || description) {
+      // Full product update
+      if (!name || !price || !imageUrl) {
+        return NextResponse.json({ error: "Name, price, and imageUrl are required for a full product update" }, { status: 400 });
+      }
+
+      await sql.connect(config);
+      const result = await sql.query`UPDATE dbo.Products 
+                                     SET Name=${name}, Price=${price}, Stock=${stock}, ImageUrl=${imageUrl}, Description=${description} 
+                                     WHERE Id=${id}`;
+      await sql.close();
+
+      if (result.rowsAffected[0] === 0) {
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true });
+
+    } else if (typeof stock === 'number') {
+      // Stock update
+      if (typeof stock === 'undefined') {
+        return NextResponse.json({ error: "Stock is required" }, { status: 400 });
+      }
+
+      await sql.connect(config);
+      const result = await sql.query`UPDATE dbo.Products 
+                                     SET Stock=${stock} 
+                                     WHERE Id=${id}`;
+      await sql.close();
+
+      if (result.rowsAffected[0] === 0) {
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true });
+    } else {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
-
-    await sql.connect(config);
-    const result = await sql.query`UPDATE dbo.Products 
-                                   SET Name=${name}, Price=${price}, Stock=${stock}, ImageUrl=${imageUrl}, Description=${description} 
-                                   WHERE Id=${id}`;
-    await sql.close();
-
-    if (result.rowsAffected[0] === 0) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true });
 
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update product or stock" }, { status: 500 });
   }
 }
-
     // ✅ DELETE: Remove a product
     export async function DELETE(req, { params }) {
         try {

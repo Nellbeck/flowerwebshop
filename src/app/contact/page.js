@@ -26,17 +26,17 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-[#abc1a9]">
       {/* Navbar */}
       <Navbar />
 
       <main className="flex-1 container mx-auto py-24 px-6">
-        <h2 className="text-3xl font-bold text-center text-black">Contact Us</h2>
-        <p className="text-center text-gray-600 mt-2">We&apos;d love to hear from you!</p>
+        <h2 className="text-3xl font-bold text-center text-black">Kontakta oss</h2>
+        <p className="text-center text-gray-600 mt-2"></p>
 
         {/* Contact Form */}
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 bg-gray-100 p-6 rounded-md shadow-md">
-          <label className="block mb-2 text-gray-700 font-medium">Name</label>
+          <label className="block mb-2 text-gray-700 font-medium">Namn</label>
           <input
             type="text"
             name="name"
@@ -56,7 +56,7 @@ export default function ContactPage() {
             className="w-full p-2 border border-gray-300 rounded mb-4"
           />
 
-          <label className="block mb-2 text-gray-700 font-medium">Message</label>
+          <label className="block mb-2 text-gray-700 font-medium">Medelande</label>
           <textarea
             name="message"
             value={formData.message}
@@ -66,10 +66,10 @@ export default function ContactPage() {
           />
 
           <button type="submit" className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
-            Send Message
+            Skicka
           </button>
 
-          {submitted && <p className="mt-4 text-green-600 text-center">Message sent! ✅</p>}
+          {submitted && <p className="mt-4 text-green-600 text-center">Medelande skickat! ✅</p>}
         </form>
       </main>
 

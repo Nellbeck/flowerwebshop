@@ -10,7 +10,6 @@ export default function ProductPage() {
     const router = useRouter();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [cart, setCart] = useState([]);
 
   // 🟢 Fetch product details when page loads
 
@@ -32,35 +31,31 @@ export default function ProductPage() {
     fetchProduct();
   }, [params?.id, router]);
 
-  // 🟢 Load cart from local storage
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(storedCart);
-  }, []);
-
-  // 🟢 Update quantity
+  // Update quantity
   const handleQuantityChange = (amount) => {
     setQuantity((prev) => Math.max(1, Math.min(prev + amount, product.Stock)));
   };
 
-  // 🟢 Add product to cart
+  // Add product to cart and update Navbar
   const addToCart = () => {
     if (!product) return;
 
-    const updatedCart = [...cart];
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const updatedCart = [...storedCart];
     const existingItem = updatedCart.find((item) => item.Id === product.Id);
 
     if (existingItem) {
-      const newQuantity = existingItem.quantity + quantity;
-      if (newQuantity > product.Stock) return alert("Not enough stock!");
-
-      existingItem.quantity = newQuantity;
+      if (existingItem.quantity + quantity > product.Stock) {
+        alert("Not enough stock!");
+        return;
+      }
+      existingItem.quantity += quantity;
     } else {
       updatedCart.push({ ...product, quantity });
     }
 
-    setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event("cartUpdated")); // Notify Navbar
   };
 
   if (!product) return <p>Loading...</p>;
@@ -77,12 +72,13 @@ export default function ProductPage() {
           <img
             src={product.ImageUrl}
             alt={product.Name}
-            className="w-full h-96 object-cover rounded-md shadow-lg transition-transform transform hover:scale-105"
+            className="w-full h-full object-cover rounded-md shadow-lg transition-transform transform"
           />
 
           {/* 📜 Product Details */}
           <div>
             <h2 className="text-3xl text-black">{product.Name}</h2>
+            <p className="text-gray-700 text-lg mt-2">{product.Description}</p>
             <p className="text-gray-700 text-lg mt-2">{product.Price} SEK</p>
             <p className={`mt-2 ${product.Stock > 0 ? "text-green-600" : "text-red-600"}`}>
               {product.Stock > 0 ? `I lager: ${product.Stock}` : "Slut i lager"}
