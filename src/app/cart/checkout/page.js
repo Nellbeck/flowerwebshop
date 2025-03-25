@@ -17,6 +17,13 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")) || []);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCart(storedCart);
+    }
+  }, []);
+
   const totalSum = cart.reduce((sum, item) => sum + item.Price * item.quantity, 0);
   const router = useRouter();
 
