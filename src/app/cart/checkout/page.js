@@ -103,8 +103,9 @@ const getCoordinates = async (address, city, postalCode) => {
       // Update stock
       await updateProductStock(cart);
   
-      // Clear cart from localStorage
-      localStorage.removeItem("cart");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cart");
+      }
       setCart([]);
   
       alert("Purchase successful! Stock updated.");
