@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cart, setCart] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState("pickup"); // Default: delivery
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -82,40 +83,77 @@ const getCoordinates = async (address, city, postalCode) => {
     return false;
   };
   
-  
-  
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
-    // Check if the address is within the valid delivery area
-    const isValidAddress = await isWithinDeliveryArea(address, city, postalCode);
-  
-    if (!isValidAddress) {
-      setErrorMessage("Sorry, your address is outside the delivery area.");
-      setIsSubmitting(false);
-      return;
-    }
-  
-    try {
-      // Update stock
-      await updateProductStock(cart);
-  
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("cart");
+
+    if (deliveryOption === "delivery") {
+      const isValidAddress = await isWithinDeliveryArea(address, city, postalCode);
+      if (!isValidAddress) {
+        setErrorMessage("Sorry, your address is outside the delivery area.");
+        setIsSubmitting(false);
+        return;
       }
+    }
+
+    try {
+      // Add the order to the database
+      const orderData = {
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone,
+        address: address,
+        city: city,
+        postalCode: postalCode,
+        totalAmount: totalSum,
+        orderStatus: "Processing",  
+        deliveryMethod: deliveryOption,
+        isHomeDelivery: deliveryOption === "delivery"
+      };
+
+      const orderResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Error placing order');
+      }
+
+      const orderResult = await orderResponse.json();
+      const orderId = orderResult.orderId;
+
+      // Update the product stock
+      await updateProductStock(cart);
+
+      // Send confirmation email
+      await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          name,
+          cart,
+          totalSum,
+          orderId
+        }),
+      });
+
+      // Clear cart
+      localStorage.removeItem("cart");
       setCart([]);
-  
-      alert("Purchase successful! Stock updated.");
-      // Redirect to homepage or order confirmation page
+
+      alert("Purchase successful! Order confirmation has been sent.");
       router.push("/");
     } catch (error) {
       console.error("Error during purchase:", error);
       alert("There was an error processing your order. Please try again.");
     }
-  
+
     setIsSubmitting(false);
   };
   
@@ -204,6 +242,34 @@ const getCoordinates = async (address, city, postalCode) => {
               className="w-full p-2 border border-gray-300 rounded-md"
               required
             />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-lg text-black mb-2">Leveransalternativ</label>
+            <div className="flex space-x-4">
+            <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="deliveryOption"
+                  value="pickup"
+                  checked={deliveryOption === "pickup"}
+                  onChange={() => setDeliveryOption("pickup")}
+                  className="mr-2"
+                />
+                Hämta i butik
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="deliveryOption"
+                  value="delivery"
+                  checked={deliveryOption === "delivery"}
+                  onChange={() => setDeliveryOption("delivery")}
+                  className="mr-2"
+                />
+                Hemleverans
+              </label>
+            </div>
           </div>
 
           <div className="mb-6">

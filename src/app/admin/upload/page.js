@@ -98,6 +98,16 @@ export default function AdminUpload() {
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg text-black">
       <h1 className="text-3xl font-bold mb-4">Admin - Manage Products</h1>
 
+      {/* Navigate to Orders */}
+      <div className="mt-6">
+        <button
+          onClick={() => router.push("/admin/orders")}
+          className="w-full bg-teal-500 text-white py-2 rounded-md"
+        >
+          Go to Orders
+        </button>
+      </div>
+
       {/* Image Upload */}
       <div className="mb-4">
         <label className="block font-semibold">Upload Image:</label>
