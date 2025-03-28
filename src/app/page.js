@@ -68,7 +68,7 @@ export default function Home() {
       <main className="container mx-auto py-12 border-b border-black">
         <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
+          {products.slice(0, 4).map((product) => (
             <Link key={product.Id} href={`/product/${product.Id}`} className="block">
               <div className="p-6 rounded-lg transform transition-transform hover:scale-105 cursor-pointer">
                 <img
@@ -82,6 +82,11 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        <div className="text-center mt-8">
+        <Link href="/product" className="bg-green-800 text-white px-6 py-3 rounded-md hover:bg-green-900">
+          Se Alla Varor
+        </Link>
+      </div>
       </main>
       
       {/* 🔹 Inspiration Section */}

@@ -33,7 +33,7 @@ const AdminOrders = () => {
   }, [showHomeDelivery]);
 
   return (
-    <div className="max-w mx-auto p-6 bg-white shadow-md rounded-lg text-black">
+    <div className="mx-auto p-6 bg-white shadow-md rounded-lg text-black">
       <h1 className="text-3xl font-bold mb-4">Admin - Orders</h1>
       
       {/* Button to navigate to Admin Upload */}
@@ -57,42 +57,43 @@ const AdminOrders = () => {
         </label>
       </div>
     
-
       {/* Orders Table */}
-      <table className="min-w-full table-auto mb-6">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2">Order ID</th>
-            <th className="px-4 py-2">Customer Name</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Phone</th>
-            <th className="px-4 py-2">Address</th>
-            <th className="px-4 py-2">City</th>
-            <th className="px-4 py-2">Postal Code</th>
-            <th className="px-4 py-2">Total Amount</th>
-            <th className="px-4 py-2">Delivery Method</th>
-            <th className="px-4 py-2">Order Status</th>
-            <th className="px-4 py-2">Order Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order.OrderId} className="border-b">
-              <td className="px-4 py-2">{order.OrderId}</td>
-              <td className="px-4 py-2">{order.CustomerName}</td>
-              <td className="px-4 py-2">{order.CustomerEmail}</td>
-              <td className="px-4 py-2">{order.CustomerPhone}</td>
-              <td className="px-4 py-2">{order.Address}</td>
-              <td className="px-4 py-2">{order.City}</td>
-              <td className="px-4 py-2">{order.PostalCode}</td>
-              <td className="px-4 py-2">{order.TotalAmount}</td>
-              <td className="px-4 py-2">{order.DeliveryMethod}</td>
-              <td className="px-4 py-2">{order.OrderStatus}</td>
-              <td className="px-4 py-2">{new Date(order.CreatedAt).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto w-full">
+            <table className="min-w-full table-auto mb-6">
+            <thead>
+                <tr className="bg-gray-100">
+                <th className="px-4 py-2">Order ID</th>
+                <th className="px-4 py-2">Customer Name</th>
+                <th className="px-4 py-2">Email</th>
+                <th className="px-4 py-2">Phone</th>
+                <th className="px-4 py-2">Address</th>
+                <th className="px-4 py-2">City</th>
+                <th className="px-4 py-2">Postal Code</th>
+                <th className="px-4 py-2">Total Amount</th>
+                <th className="px-4 py-2">Delivery Method</th>
+                <th className="px-4 py-2">Order Status</th>
+                <th className="px-4 py-2">Order Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {orders.map(order => (
+                <tr key={order.OrderId} className="border-b">
+                    <td className="px-4 py-2">{order.OrderId}</td>
+                    <td className="px-4 py-2">{order.CustomerName}</td>
+                    <td className="px-4 py-2">{order.CustomerEmail}</td>
+                    <td className="px-4 py-2">{order.CustomerPhone}</td>
+                    <td className="px-4 py-2">{order.Address}</td>
+                    <td className="px-4 py-2">{order.City}</td>
+                    <td className="px-4 py-2">{order.PostalCode}</td>
+                    <td className="px-4 py-2">{order.TotalAmount}</td>
+                    <td className="px-4 py-2">{order.DeliveryMethod}</td>
+                    <td className="px-4 py-2">{order.OrderStatus}</td>
+                    <td className="px-4 py-2">{new Date(order.CreatedAt).toLocaleString()}</td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
     </div>
   );
 };
