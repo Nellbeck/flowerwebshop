@@ -14,29 +14,28 @@ export default function AdminPage() {
     }
   }, [router]);
 
-  const handleLogin = async () => {
-    try {
-      const res = await fetch("/api/admin-password", {
-        method: "GET",
-      });
+  const handleLogin = async () => {  
+    // Send the password to your API for validation
+    const res = await fetch("/api/admin-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    });
   
-      if (!res.ok) {
-        alert("Unauthorized access");
-        return;
-      }
-  
+    if (res.ok) {
       const data = await res.json();
-      if (password === data.password) {
+      if (data.success) {
         localStorage.setItem("isAdmin", "true");
         router.push("/admin/upload");
       } else {
         alert("Incorrect password. Try again.");
       }
-    } catch (error) {
-      console.error("Error fetching password:", error);
+    } else {
+      alert("Error checking password.");
     }
   };
-  
 
   return (
     <div>
