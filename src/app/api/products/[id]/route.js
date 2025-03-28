@@ -19,109 +19,114 @@ export async function PUT(req, { params }) {
     const id = params.id;
     const { name, price, stock, imageUrl, description } = await req.json();
 
-    // Check if we're doing a full update or just a stock update
+    if (!id) {
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+    }
+
+    await sql.connect(config);
+    const request = new sql.Request();
+
+    request.input("Id", sql.Int, id);
     if (name || price || imageUrl || description) {
-      // Full product update
       if (!name || !price || !imageUrl) {
-        return NextResponse.json({ error: "Name, price, and imageUrl are required for a full product update" }, { status: 400 });
+        return NextResponse.json({ error: "Name, price, and imageUrl are required for a full update" }, { status: 400 });
       }
 
-      await sql.connect(config);
-      const result = await sql.query`UPDATE dbo.Products 
-                                     SET Name=${name}, Price=${price}, Stock=${stock}, ImageUrl=${imageUrl}, Description=${description} 
-                                     WHERE Id=${id}`;
-      await sql.close();
+      request.input("Name", sql.NVarChar, name);
+      request.input("Price", sql.Decimal, price);
+      request.input("Stock", sql.Int, stock);
+      request.input("ImageUrl", sql.NVarChar, imageUrl);
+      request.input("Description", sql.NVarChar, description);
+
+      const result = await request.query(`
+        UPDATE dbo.Products 
+        SET Name=@Name, Price=@Price, Stock=@Stock, ImageUrl=@ImageUrl, Description=@Description
+        WHERE Id=@Id
+      `);
 
       if (result.rowsAffected[0] === 0) {
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
       }
-
-      return NextResponse.json({ success: true });
-
-    } else if (typeof stock === 'number') {
-      // Stock update
-      if (typeof stock === 'undefined') {
-        return NextResponse.json({ error: "Stock is required" }, { status: 400 });
-      }
-
-      await sql.connect(config);
-      const result = await sql.query`UPDATE dbo.Products 
-                                     SET Stock=${stock} 
-                                     WHERE Id=${id}`;
-      await sql.close();
+    } else if (typeof stock === "number") {
+      request.input("Stock", sql.Int, stock);
+      const result = await request.query(`
+        UPDATE dbo.Products SET Stock=@Stock WHERE Id=@Id
+      `);
 
       if (result.rowsAffected[0] === 0) {
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
       }
-
-      return NextResponse.json({ success: true });
     } else {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
+
+    return NextResponse.json({ success: true });
 
   } catch (error) {
     console.error("Database error:", error);
     return NextResponse.json({ error: "Failed to update product or stock" }, { status: 500 });
   }
 }
+
     // ✅ DELETE: Remove a product
     export async function DELETE(req, { params }) {
-        try {
+      try {
         const id = params.id;
     
         if (!id) {
-            return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+          return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
         }
     
         await sql.connect(config);
+        const request = new sql.Request();
     
-        // 1️⃣ Fetch the image URL before deleting the product
-        const imageResult = await sql.query`SELECT ImageUrl FROM dbo.Products WHERE Id=${id}`;
+        request.input("Id", sql.Int, id);
+    
+        // Fetch the image URL before deleting the product
+        const imageResult = await request.query(`SELECT ImageUrl FROM dbo.Products WHERE Id=@Id`);
         if (imageResult.recordset.length === 0) {
-            await sql.close();
-            return NextResponse.json({ error: "Product not found" }, { status: 404 });
+          return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
     
         const imageUrl = imageResult.recordset[0].ImageUrl;
     
-        // 2️⃣ Delete the product from the database
-        const deleteResult = await sql.query`DELETE FROM dbo.Products WHERE Id=${id}`;
-    
+        // Delete the product
+        const deleteResult = await request.query(`DELETE FROM dbo.Products WHERE Id=@Id`);
         if (deleteResult.rowsAffected[0] === 0) {
-            await sql.close();
-            return NextResponse.json({ error: "Product not found" }, { status: 404 });
+          return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
     
-        await sql.close();
-    
-        // 3️⃣ Delete the associated image from Azure Blob Storage
+        // Delete image from Azure Blob Storage
         if (imageUrl) {
-            const url = new URL(imageUrl);
-            const fileName = url.pathname.split("/").pop(); // Extract filename correctly
-            await deleteBlob(fileName);
+          const url = new URL(imageUrl);
+          const fileName = url.pathname.split("/").pop();
+          await deleteBlob(fileName);
         }
     
         return NextResponse.json({ success: true });
     
-        } catch (error) {
+      } catch (error) {
         console.error("Database error:", error);
         return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
-        }
+      }
     }
+    
     
     // ✅ GET: Fetch a single product
     export async function GET(req, context) {
-      const params = await context.params; // Ensure params is awaited
-
+      const params = await context.params;
+    
       if (!params?.id) {
         return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
       }
     
       try {
         await sql.connect(config);
-        const result = await sql.query`SELECT * FROM dbo.Products WHERE Id=${params.id}`;
-        await sql.close();
+        const request = new sql.Request();
+        request.input("Id", sql.Int, params.id);
     
+        const result = await request.query(`SELECT * FROM dbo.Products WHERE Id=@Id`);
+        
         if (result.recordset.length === 0) {
           return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
@@ -132,3 +137,4 @@ export async function PUT(req, { params }) {
         return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
       }
     }
+    

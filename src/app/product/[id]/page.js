@@ -106,7 +106,7 @@ export default function ProductPage() {
             {/* 🛒 Add to Cart Button */}
             {product.Stock > 0 ? (
               <button
-                className="mt-4 px-6 py-3 text-black hover:bg-green-800 rounded-md border border-black"
+                className="mt-4 px-6 py-3 text-black hover:bg-green-900 transition duration-300 rounded-md border border-black"
                 onClick={addToCart}
               >
                 Lägg i Varukorgen
