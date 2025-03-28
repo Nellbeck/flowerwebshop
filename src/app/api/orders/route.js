@@ -69,8 +69,42 @@ export async function POST(req) {
 export async function GET() {
     try {
         const pool = await sql.connect(config);
-        const result = await pool.request().query("SELECT * FROM dbo.Orders");
-        return NextResponse.json(result.recordset);
+
+        // Perform LEFT JOIN with OrderItems and Products to get product name
+        const result = await pool.request().query(`
+            SELECT 
+                O.OrderId,
+                O.CustomerName,
+                O.CustomerEmail,
+                O.CustomerPhone,
+                O.Address,
+                O.City,
+                O.PostalCode,
+                O.TotalAmount,
+                O.DeliveryMethod,
+                O.OrderStatus,
+                O.CreatedAt,
+                O.IsHomeDelivery,
+                -- Aggregate the order items with product name into a JSON array
+                (SELECT 
+                    I.ProductId,
+                    P.Name,  -- Add the product name here
+                    I.Quantity,
+                    I.PriceAtPurchase
+                 FROM dbo.OrderItems I 
+                 INNER JOIN dbo.Products P ON I.ProductId = P.Id  -- JOIN with Products table
+                 WHERE I.OrderId = O.OrderId
+                 FOR JSON PATH) AS OrderItems
+            FROM dbo.Orders O
+        `);
+
+        // Parse the JSON string for the OrderItems column
+        const orders = result.recordset.map(order => ({
+            ...order,
+            OrderItems: JSON.parse(order.OrderItems || '[]')
+        }));
+
+        return NextResponse.json(orders);
     } catch (error) {
         console.error("Database error:", error);
         return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
