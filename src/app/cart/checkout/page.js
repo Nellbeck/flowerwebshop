@@ -16,7 +16,9 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cart, setCart] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [deliveryOption, setDeliveryOption] = useState("pickup"); // Default: delivery
+  const [deliveryOption, setDeliveryOption] = useState("pickup");
+  const [deliveryFee, setDeliveryFee] = useState(0);
+
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -26,6 +28,7 @@ export default function CheckoutPage() {
   }, []);
 
   const totalSum = cart.reduce((sum, item) => sum + item.Price * item.quantity, 0);
+
   const router = useRouter();
 
   // Base origin for delivery (latitude, longitude)
@@ -70,17 +73,24 @@ const getCoordinates = async (address, city, postalCode) => {
     }
   };
   
+  const getDeliveryFee = (distance) => {
+    if (distance <= 2) return 99;
+    if (distance <= 4) return 129;
+    if (distance <= 7) return 139;
+    if (distance <= 12) return 149;
+    return null; // No delivery if distance > 12 km
+  };
   
-  // Check if the user's address is within 10 km of the base origin
   const isWithinDeliveryArea = async (address, city, postalCode) => {
     const coordinates = await getCoordinates(address, city, postalCode);
-    if (coordinates) {
-      const userLocation = turf.point(coordinates);
-      const baseLocation = turf.point(baseOrigin);
-      const distance = turf.distance(userLocation, baseLocation, { units: "kilometers" }); // Ensuring it's in kilometers
-      return distance <= 10; // 10 km radius
-    }
-    return false;
+    if (!coordinates) return { withinDelivery: false, fee: null };
+  
+    const userLocation = turf.point(coordinates);
+    const baseLocation = turf.point(baseOrigin);
+    const distance = turf.distance(userLocation, baseLocation, { units: "kilometers" });
+  
+    const deliveryFee = getDeliveryFee(distance);
+    return { withinDelivery: deliveryFee !== null, fee: deliveryFee };
   };
   
   // Handle form submission
@@ -89,12 +99,13 @@ const getCoordinates = async (address, city, postalCode) => {
     setIsSubmitting(true);
 
     if (deliveryOption === "delivery") {
-      const isValidAddress = await isWithinDeliveryArea(address, city, postalCode);
-      if (!isValidAddress) {
+      const { withinDelivery, fee } = await isWithinDeliveryArea(address, city, postalCode);
+      if (!withinDelivery) {
         setErrorMessage("Sorry, your address is outside the delivery area.");
         setIsSubmitting(false);
         return;
       }
+      setDeliveryFee(fee); // Store the fee for order summary
     }
 
     try {
@@ -109,7 +120,8 @@ const getCoordinates = async (address, city, postalCode) => {
         totalAmount: totalSum,
         orderStatus: "Processing",  
         deliveryMethod: deliveryOption,
-        isHomeDelivery: deliveryOption === "delivery"
+        isHomeDelivery: deliveryOption === "delivery",
+        items: cart,
       };
 
       const orderResponse = await fetch("/api/orders", {
@@ -264,14 +276,23 @@ const getCoordinates = async (address, city, postalCode) => {
                   name="deliveryOption"
                   value="delivery"
                   checked={deliveryOption === "delivery"}
-                  onChange={() => setDeliveryOption("delivery")}
+                  onChange={async () => {
+                    setDeliveryOption("delivery");
+                    const { withinDelivery, fee } = await isWithinDeliveryArea(address, city, postalCode);
+                    if (!withinDelivery) {
+                      setErrorMessage("Sorry, your address is outside the delivery area.");
+                      setDeliveryFee(0);
+                    } else {
+                      setErrorMessage("");
+                      setDeliveryFee(fee);
+                    }
+                  }}
                   className="mr-2"
                 />
                 Hemleverans
               </label>
             </div>
           </div>
-
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-black">Order Summering</h2>
             <ul className="space-y-4">
@@ -282,10 +303,20 @@ const getCoordinates = async (address, city, postalCode) => {
                 </li>
               ))}
             </ul>
+
+            {/* Display Home Delivery Fee if selected */}
+            {deliveryOption === "delivery" && (
+              <div className="mt-2 flex justify-between text-black">
+                <span>Hemleverans:</span>
+                <span>{deliveryFee.toFixed(2)} SEK</span>
+              </div>
+            )}
+
             <div className="mt-4 flex justify-between font-bold text-black">
               <span>Total:</span>
-              <span>{totalSum.toFixed(2)} SEK</span>
+              <span>{(totalSum + (deliveryFee || 0)).toFixed(2)} SEK</span>
             </div>
+
           </div>
 
           <button
