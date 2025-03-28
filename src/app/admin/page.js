@@ -14,15 +14,32 @@ export default function AdminPage() {
     }
   }, [router]);
 
-  const handleLogin = () => {
-    const correctPassword = process.env.AZURE_STORAGE_ADMIN_PASSWORD;
-    if (password === correctPassword) {
-      localStorage.setItem("isAdmin", "true"); // Store admin status
-      router.push("/admin/upload"); // Redirect to the upload page
-    } else {
-      alert("Incorrect password. Try again.");
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("/api/admin-password", {
+        method: "GET",
+        headers: {
+          "x-secret-key": process.env.NEXT_PUBLIC_SECRET_API_KEY, 
+        },
+      });
+  
+      if (!res.ok) {
+        alert("Unauthorized access");
+        return;
+      }
+  
+      const data = await res.json();
+      if (password === data.password) {
+        localStorage.setItem("isAdmin", "true");
+        router.push("/admin/upload");
+      } else {
+        alert("Incorrect password. Try again.");
+      }
+    } catch (error) {
+      console.error("Error fetching password:", error);
     }
   };
+  
 
   return (
     <div>
