@@ -15,7 +15,7 @@ export default function AdminPage() {
   }, [router]);
 
   const handleLogin = () => {
-    const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    const correctPassword = process.env.AZURE_STORAGE_ADMIN_PASSWORD;
     if (password === correctPassword) {
       localStorage.setItem("isAdmin", "true"); // Store admin status
       router.push("/admin/upload"); // Redirect to the upload page
