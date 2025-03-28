@@ -1,7 +1,9 @@
 export async function GET(req) {
-    const secretKey = req.headers.get("x-secret-key");
+    const secretKey = process.env.SECRET_API_KEY; 
+
+    const headerSecretKey = req.headers.get("x-secret-key");
   
-    if (!secretKey || secretKey !== process.env.SECRET_API_KEY) {
+    if (!headerSecretKey || headerSecretKey !== secretKey) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     }
   
