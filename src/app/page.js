@@ -9,6 +9,17 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const [cart, setCart] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    // Simulate a delay for the database to wake up, or fetch data
+    const timer = setTimeout(() => {
+      setIsLoading(false); // Data is now "loaded"
+    }, 2000); // Adjust this delay according to your actual data load time
+
+    return () => clearTimeout(timer); // Cleanup timer on component unmount
+  }, []);
 
   useEffect(() => {
     // Fetch products from API
@@ -66,7 +77,14 @@ export default function Home() {
 
       {/* 🔹 Product Grid */}
       <main className="container mx-auto py-12 border-b border-black">
-        <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
+      <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
+
+      {/* Show loading message while data is being fetched */}
+      {isLoading ? (
+        <div className="text-center">
+          <p className="text-lg text-gray-600">Vänligen vänta, laddar...</p>
+        </div>
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.slice(0, 4).map((product) => (
             <Link key={product.Id} href={`/product/${product.Id}`} className="block">
@@ -82,12 +100,14 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <div className="text-center mt-8">
+      )}
+
+      <div className="text-center mt-8">
         <Link href="/product" className="bg-green-800 text-white px-6 py-3 rounded-md hover:bg-green-900">
           Se Alla Varor
         </Link>
       </div>
-      </main>
+    </main>
       
       {/* 🔹 Inspiration Section */}
       <section className="container mx-auto py-12">

@@ -27,32 +27,31 @@ export default function CartPage() {
     window.dispatchEvent(new Event("cartUpdated")); // Ensure Navbar updates
   };
 
-  // 🔹 Update item quantity
+  // 🔹 Update item quantity, allow removal when quantity goes to 0
   const updateQuantity = (productId, change) => {
     setCart((prevCart) => {
       const newCart = prevCart
-        .map((item) =>
-          item.Id === productId ? { ...item, quantity: item.quantity + change } : item
-        )
-        .filter((item) => item.quantity > 0); // Remove item if quantity reaches 0
-  
+        .map((item) => {
+          if (item.Id === productId) {
+            const newQuantity = item.quantity + change;
+            return {
+              ...item,
+              quantity: newQuantity <= 0 ? 0 : newQuantity, // Allow quantity to go to 0
+            };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0); // Remove the product if quantity is 0 or less
+
       localStorage.setItem("cart", JSON.stringify(newCart)); // Sync with localStorage
-      
+
       // Delay the Navbar update using setTimeout to avoid React's render phase conflicts
       setTimeout(() => {
         window.dispatchEvent(new Event("cartUpdated"));
       }, 0);
-  
+
       return newCart;
     });
-  };
-  
-  
-  
-  // 🔹 Remove item from cart
-  const removeFromCart = (id) => {
-    const updatedCart = cart.filter((item) => item.Id !== id);
-    updateCart(updatedCart);
   };
 
   // 🔹 Calculate total sum
@@ -89,9 +88,21 @@ export default function CartPage() {
 
                 {/* Quantity Controls */}
                 <div className="flex items-center justify-center">
-                  <button className="px-3 py-1" onClick={() => updateQuantity(item.Id, -1)}>➖</button>
+                  <button
+                    className="px-3 py-1"
+                    onClick={() => updateQuantity(item.Id, -1)}
+                    disabled={item.quantity <= 0} // Disable minus if quantity is 0
+                  >
+                    ➖
+                  </button>
                   <span className="px-4">{item.quantity}</span>
-                  <button className="px-3 py-1" onClick={() => updateQuantity(item.Id, 1)}>➕</button>
+                  <button
+                    className="px-3 py-1"
+                    onClick={() => updateQuantity(item.Id, 1)}
+                    disabled={item.quantity >= item.Stock} // Disable plus if quantity exceeds stock
+                  >
+                    ➕
+                  </button>
                 </div>
 
                 {/* Price */}
