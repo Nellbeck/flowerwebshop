@@ -18,9 +18,6 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/admin-password", {
         method: "GET",
-        headers: {
-          "x-secret-key": process.env.NEXT_PUBLIC_SECRET_API_KEY, 
-        },
       });
   
       if (!res.ok) {
