@@ -18,7 +18,14 @@ export default function CheckoutPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("pickup");
   const [deliveryFee, setDeliveryFee] = useState(0);
+  const [selectedDate, setSelectedDate] = useState("");
 
+  useEffect(() => {
+    const now = new Date();
+    if (now.getHours() >= 12) {
+      setIsTodayDisabled(true);
+    }
+  }, []);  
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -33,6 +40,32 @@ export default function CheckoutPage() {
 
   // Base origin for delivery (latitude, longitude)
   const baseOrigin = [17.0553866, 61.3033484];
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    return { hours: now.getHours(), minutes: now.getMinutes() };
+  };
+
+  // Generate the min available date based on current time
+  const getMinDate = () => {
+    const today = new Date();
+    const currentTime = getCurrentTime();
+
+    if (
+      (deliveryOption === "delivery" && currentTime.hours >= 12) ||
+      (deliveryOption === "pickup" && currentTime.hours >= 17)
+    ) {
+      today.setDate(today.getDate() + 1); // Move to next day if too late
+    }
+
+    return today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+  };
+
+  // Check if the selected date is a Sunday
+  const isSunday = (date) => {
+    const day = new Date(date).getDay();
+    return day === 0; // 0 = Sunday
+  };
 
   // Function to update stock of the products
   const updateProductStock = async (cart) => {
@@ -98,6 +131,18 @@ const getCoordinates = async (address, city, postalCode) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    if (!selectedDate) {
+      setErrorMessage("Vänligen välj ett datum.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (isSunday(selectedDate)) {
+      setErrorMessage("Söndagar är inte tillgängliga för leverans.");
+      setIsSubmitting(false);
+      return;
+    }
+
     if (deliveryOption === "delivery") {
       const { withinDelivery, fee } = await isWithinDeliveryArea(address, city, postalCode);
       if (!withinDelivery) {
@@ -121,6 +166,7 @@ const getCoordinates = async (address, city, postalCode) => {
         orderStatus: "Processing",  
         deliveryMethod: deliveryOption,
         isHomeDelivery: deliveryOption === "delivery",
+        pickUpDeliveryDate: selectedDate,
         items: cart,
       };
 
@@ -293,6 +339,24 @@ const getCoordinates = async (address, city, postalCode) => {
               </label>
             </div>
           </div>
+          {/* Delivery Date Selection */}
+          <div className="mb-4">
+            <label className="block text-lg text-black mb-2" htmlFor="date">
+              Välj leverans-/upphämtningsdatum
+            </label>
+            <input
+              type="date"
+              id="date"
+              value={selectedDate}
+              min={getMinDate()} // Set minimum date based on time
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          {/* Error Message */}
+          {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-black">Order Summering</h2>
             <ul className="space-y-4">

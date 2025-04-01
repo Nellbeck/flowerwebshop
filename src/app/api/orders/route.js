@@ -13,7 +13,7 @@ const config = {
 };
 
 export async function POST(req) {
-    const { customerName, customerEmail, customerPhone, address, city, postalCode, totalAmount, deliveryMethod, orderStatus, isHomeDelivery, items } = await req.json();
+    const { customerName, customerEmail, customerPhone, address, city, postalCode, totalAmount, deliveryMethod, orderStatus, isHomeDelivery, items, pickUpDeliveryDate  } = await req.json();
 
     if (!items || !items.length) {
         return NextResponse.json({ message: "Order must contain at least one product" }, { status: 400 });
@@ -37,10 +37,11 @@ export async function POST(req) {
             .input("OrderStatus", sql.NVarChar, orderStatus)
             .input("DeliveryMethod", sql.NVarChar, deliveryMethod)
             .input("IsHomeDelivery", sql.Bit, isHomeDelivery)
+            .input("PickUpDeliveryDate", sql.Date, pickUpDeliveryDate)
             .query(`
-                INSERT INTO Orders (CustomerName, CustomerEmail, CustomerPhone, Address, City, PostalCode, TotalAmount, OrderStatus, DeliveryMethod, IsHomeDelivery)
+                INSERT INTO Orders (CustomerName, CustomerEmail, CustomerPhone, Address, City, PostalCode, TotalAmount, OrderStatus, DeliveryMethod, IsHomeDelivery, PickUpDeliveryDate)
                 OUTPUT INSERTED.OrderId
-                VALUES (@CustomerName, @CustomerEmail, @CustomerPhone, @Address, @City, @PostalCode, @TotalAmount, @OrderStatus, @DeliveryMethod, @IsHomeDelivery);
+                VALUES (@CustomerName, @CustomerEmail, @CustomerPhone, @Address, @City, @PostalCode, @TotalAmount, @OrderStatus, @DeliveryMethod, @IsHomeDelivery, @PickUpDeliveryDate);
             `);
 
         const orderId = orderResult.recordset[0].OrderId;
@@ -85,6 +86,7 @@ export async function GET() {
                 O.OrderStatus,
                 O.CreatedAt,
                 O.IsHomeDelivery,
+                O.PickUpDeliveryDate,
                 -- Aggregate the order items with product name into a JSON array
                 (SELECT 
                     I.ProductId,
