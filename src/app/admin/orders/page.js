@@ -23,6 +23,7 @@ const AdminOrders = () => {
     productName: true,
     quantity: true,
     priceAtPurchase: true,
+    pickUpDeliveryDate: true,
   });
   const router = useRouter();
 
@@ -116,7 +117,7 @@ const AdminOrders = () => {
 
       {/* Orders Table */}
       <div className="overflow-x-auto w-full">
-        <table className="min-w-full table-auto mb-6">
+        <table className="min-w-full table-auto mb-6 text-center">
           <thead>
             <tr className="bg-gray-100">
               {columns.orderId && <th className="px-4 py-2">Order ID</th>}
@@ -133,6 +134,7 @@ const AdminOrders = () => {
               {columns.productName && <th className="px-4 py-2">Product Name</th>}
               {columns.quantity && <th className="px-4 py-2">Quantity</th>}
               {columns.priceAtPurchase && <th className="px-4 py-2">Price at Purchase</th>}
+              {columns.pickUpDeliveryDate && <th className="px-4 py-2">Pickup/Delivery Date</th>}
             </tr>
           </thead>
           <tbody>
@@ -171,6 +173,11 @@ const AdminOrders = () => {
                     {order.OrderItems.map(item => (
                       <div key={item.ProductName}>{item.PriceAtPurchase}</div>
                     ))}
+                  </td>
+                )}
+                {columns.pickUpDeliveryDate && (
+                  <td className="px-4 py-2">
+                    {order.PickUpDeliveryDate ? new Date(order.PickUpDeliveryDate).toLocaleDateString() : "N/A"}
                   </td>
                 )}
               </tr>

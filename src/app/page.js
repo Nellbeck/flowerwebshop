@@ -110,7 +110,7 @@ export default function Home() {
     </main>
       
       {/* 🔹 Inspiration Section */}
-      <section className="container mx-auto py-12">
+      <section className="container mx-auto py-12 border-b border-black">
         <h3 className="text-3xl mb-6 text-black text-center"></h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mx-4">
           <img 
@@ -124,7 +124,7 @@ export default function Home() {
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
           <img 
-            src="https://scontent-arn2-1.xx.fbcdn.net/v/t51.75761-15/484766747_18495709378040004_8176556141056771156_n.jpg?stp=dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=CApdOrdo-3wQ7kNvgFgd1Vs&_nc_oc=AdnJWAbtyEFZNuiIsfRwWKNOfiWM7JA6jDWr3x_54R5oE4gl5U5lR8QofABBbGKEgYM&_nc_zt=23&_nc_ht=scontent-arn2-1.xx&_nc_gid=WDAQRiMoFNIcJpx9WcXyoQ&oh=00_AYEwyYOVxVVW4uhLAY6Yiw0boktsBYfpb1JxxxrJF3oTjw&oe=67E709F5" 
+            src="https://static.bonniernews.se/ba/06a4cc1e-0e3d-48b3-9e7e-417330e18ac7.jpeg?width=1400&format=pjpg&auto=webp" 
             alt="Woman with flowers"
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
@@ -140,7 +140,7 @@ export default function Home() {
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
           <img 
-            src="https://i.pinimg.com/736x/73/41/ea/7341ea159c44b8167930ff88ae920fb2.jpg" 
+            src="https://i.pinimg.com/736x/40/d3/26/40d32603f77b7d459817cb27edacc982.jpg" 
             alt="Woman with flowers"
             className="w-full h-full object-cover rounded-lg shadow-lg"
           />
