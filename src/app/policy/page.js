@@ -27,7 +27,7 @@ export default function Integritetspolicy() {
 
       <h2 className="text-xl font-semibold mt-6">Cookies</h2>
       <p className="mb-4">
-        Vi använder cookies för att analysera trafik och förbättra din upplevelse. Du kan när som helst hantera dina cookie-inställningar via knappen <strong>"Hantera Cookies"</strong> i sidfoten.
+        Vi använder cookies för att analysera trafik och förbättra din upplevelse.
       </p>
 
       <h2 className="text-xl font-semibold mt-6">Dina rättigheter</h2>

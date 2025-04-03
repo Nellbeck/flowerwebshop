@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const GDPRBanner = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -19,11 +20,12 @@ const GDPRBanner = () => {
   return (
     showBanner && (
       <div className="fixed bottom-0 left-0 w-full bg-gray-800 text-white p-4 flex justify-between items-center">
-        <p className="text-sm">
-          Vi använder cookies för att förbättra din upplevelse. Läs mer i vår{" "}
-          <a href="/privacy-policy" className="underline">
+        <p className="mb-4">
+        Vi använder cookies för att förbättra din upplevelse. Läs mer i vår{" "}
+        <Link href="/policy" className="underline">
             integritetspolicy
-          </a>.
+        </Link>
+        .
         </p>
         <button
           onClick={handleAccept}
