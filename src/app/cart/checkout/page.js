@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const [deliveryOption, setDeliveryOption] = useState("pickup");
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [selectedDate, setSelectedDate] = useState("");
+  const [isTodayDisabled, setIsTodayDisabled] = useState(false);
 
   useEffect(() => {
     const now = new Date();
@@ -148,6 +149,8 @@ const getCoordinates = async (address, city, postalCode) => {
       if (!withinDelivery) {
         setErrorMessage("Sorry, your address is outside the delivery area.");
         setIsSubmitting(false);
+        setDeliveryOption("pickup");
+        setDeliveryFee(0);
         return;
       }
       setDeliveryFee(fee); // Store the fee for order summary
@@ -328,6 +331,7 @@ const getCoordinates = async (address, city, postalCode) => {
                     if (!withinDelivery) {
                       setErrorMessage("Sorry, your address is outside the delivery area.");
                       setDeliveryFee(0);
+                      setDeliveryOption("pickup");
                     } else {
                       setErrorMessage("");
                       setDeliveryFee(fee);
@@ -354,9 +358,6 @@ const getCoordinates = async (address, city, postalCode) => {
               required
             />
           </div>
-
-          {/* Error Message */}
-          {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-black">Order Summering</h2>
             <ul className="space-y-4">
