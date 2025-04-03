@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
+import GDPRBanner from "@/components/GDPRBanner";
 
 // Load fonts
 const geistSans = Geist({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
       >
           {children}
+          <GDPRBanner />
       </body>
     </html>
   );

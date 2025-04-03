@@ -65,14 +65,22 @@ export default function Home() {
       <Navbar cartCount={cartCount} />
 
       {/* 🔹 Hero Section */}
-      <section
-        className="relative h-[900px] bg-cover bg-center flex items-center justify-center text-center bg-[#abc1a9]"
-        style={{ backgroundImage: "url('https://static.bonniernews.se/ba/17bfa280-3679-45d8-8383-2168458e3d70.jpeg?width=1400&format=pjpg&auto=webp')" }}
+      <section className="relative h-[1000px] bg-cover bg-center flex items-center justify-center text-center bg-[#abc1a9]">
+      <video 
+        className="absolute top-0 left-0 w-full h-full object-cover" 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
       >
-        <div className="bg-black/40 p-8 rounded-lg text-white max-w-lg">
-          <h2 className="text-5xl font-bold">Vackra Blommor för Alla Tillfällen</h2>
-          <p className="text-lg mt-2 font-light">Skicka kärlek med noggrant utvalda buketter.</p>
-        </div>
+        <source src="https://videos.pexels.com/video-files/4269187/4269187-uhd_2732_1440_25fps.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <div className="relative z-10 bg-black/40 p-8 rounded-lg text-white max-w-lg">
+        <h2 className="text-5xl font-bold">Vackra Blommor för Alla Tillfällen</h2>
+        <p className="text-lg mt-2 font-light">Skicka omtanke med noggrant utvalda buketter.</p>
+      </div>
       </section>
 
       {/* 🔹 Product Grid */}
@@ -131,7 +139,7 @@ export default function Home() {
         </div>
       </section>
       <section className="container mx-auto py-10">
-        <h3 className="text-3xl mb-6 text-black text-center">Romantik</h3>
+        <h3 className="text-3xl mb-6 text-black text-center"></h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mx-4">
 
           <img 
