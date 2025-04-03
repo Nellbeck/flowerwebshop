@@ -34,7 +34,6 @@ export default function Navbar() {
         <nav className="hidden md:flex gap-8 text-lg text-gray-700 font-light">
           <Link href="/" className="hover:text-green-500 transition duration-300">Hem</Link>
           <Link href="/product" className="hover:text-green-500 transition duration-300">Varor</Link>
-          <Link href="/contact" className="hover:text-green-500 transition duration-300">Kontakt</Link>
         </nav>
 
         {/* Cart Icon */}
@@ -75,7 +74,6 @@ export default function Navbar() {
         <div className="md:hidden flex flex-col items-center bg-white shadow-lg border-t border-gray-200">
           <Link href="/" className="py-3 w-full text-center text-lg text-gray-700 hover:text-green-500 transition duration-300 border-b" onClick={() => setIsOpen(false)}>Hem</Link>
           <Link href="/product" className="py-3 w-full text-center text-lg text-gray-700 hover:text-green-500 transition duration-300 border-b" onClick={() => setIsOpen(false)}>Varor</Link>
-          <Link href="/contact" className="py-3 w-full text-center text-lg text-gray-700 hover:text-green-500 transition duration-300 border-b" onClick={() => setIsOpen(false)}>Kontakt</Link>
         </div>
       )}
     </header>

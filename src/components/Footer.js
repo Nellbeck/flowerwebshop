@@ -7,7 +7,7 @@ export default function Footer() {
 
         {/* Opening hours - Left side */}
         <div>
-          <h3 className="text-lg">Öppettider</h3>
+          <h3 className="text-lg font-bold">Öppettider</h3>
           <ul className="mt-2">
             <li>Måndag: 10:00–18:00</li>
             <li>Tisdag: 10:00–18:00</li>
@@ -21,13 +21,28 @@ export default function Footer() {
 
         {/* Navigation Links - Right side */}
         <div className="flex flex-col items-end">
-          <Link href="/" className="hover:underline">Hem</Link>
-          <Link href="/contact" className="hover:underline">Kontakt</Link>
+          <section className="text-right">
+          <h2 className="font-bold text-lg">Kontakta oss</h2>
+          <p>Köpmangatan 19 A</p>
+          <p>826 30 SÖDERHAMN</p>
+          <p>Tel: +4627041487</p>
+        </section>
+        <section className="my-4 flex flex-col items-end">
+        <Link href="/" className="hover:underline">Hem</Link>
+        <Link href="/product" className="hover:underline">Varor</Link>
+
+
+        </section>
+
+        <Link href="/policy" className="hover:underline text-gray-600 text-sm">
+          Integritetspolicy
+        </Link>
         </div>
+
       </div>
 
       {/* Copyright text centered below */}
-      <p className="text-center mt-6 text-lg">© 2025 Blåklinten Blommor. Alla rättigheter förbehållna.</p>
+      <p className="text-center mt-6 text-lg">© 2025. Alla rättigheter förbehållna.</p>
     </footer>
   );
 }
