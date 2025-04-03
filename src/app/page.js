@@ -97,11 +97,11 @@ export default function Home() {
             <div className="flex justify-center gap-8 min-w-max">
               {products.slice(0, 4).map((product) => (
                 <Link key={product.Id} href={`/product/${product.Id}`} className="block inline-block">
-                  <div className="p-6 rounded-lg transform transition-transform hover:scale-105 cursor-pointer">
+                  <div className="p-6 rounded-lg">
                     <img
                       src={product.ImageUrl}
                       alt={product.Name}
-                      className="w-full h-56 object-cover rounded-md"
+                      className="w-full h-56 object-cover rounded-md transform transition-transform hover:scale-105"
                     />
                     <h4 className="text-xl mt-3 text-black text-center">{product.Name}</h4>
                     <p className="text-gray-700 font-medium mt-2 text-center">{product.Price} SEK</p>
