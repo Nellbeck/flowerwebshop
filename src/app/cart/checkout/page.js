@@ -377,7 +377,7 @@ const getCoordinates = async (address, city, postalCode) => {
             )}
 
             <div className="mt-4 flex justify-between font-bold text-black">
-              <span>Total:</span>
+              <span>Totalt:</span>
               <span>{(totalSum + (deliveryFee || 0)).toFixed(2)} SEK</span>
             </div>
 
@@ -388,7 +388,7 @@ const getCoordinates = async (address, city, postalCode) => {
             className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing..." : "Confirm Purchase"}
+            {isSubmitting ? "Bearbetning..." : "Bekräfta Köp"}
           </button>
         </form>
       </main>
