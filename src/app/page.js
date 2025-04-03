@@ -85,37 +85,40 @@ export default function Home() {
 
       {/* 🔹 Product Grid */}
       <main className="container mx-auto py-12 border-b border-black">
-      <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
+        <h3 className="text-3xl mb-6 text-black text-center">Buketter</h3>
 
-      {/* Show loading message while data is being fetched */}
-      {isLoading ? (
-        <div className="text-center">
-          <p className="text-lg text-gray-600">Vänligen vänta, laddar...</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {products.slice(0, 4).map((product) => (
-            <Link key={product.Id} href={`/product/${product.Id}`} className="block">
-              <div className="p-6 rounded-lg transform transition-transform hover:scale-105 cursor-pointer">
-                <img
-                  src={product.ImageUrl}
-                  alt={product.Name}
-                  className="w-full h-56 object-cover rounded-md"
-                />
-                <h4 className="text-xl mt-3 text-black text-center">{product.Name}</h4>
-                <p className="text-gray-700 font-medium mt-2 text-center">{product.Price} SEK</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+        <section className="overflow-x-auto">
+          {/* Show loading message while data is being fetched */}
+          {isLoading ? (
+            <div className="text-center">
+              <p className="text-lg text-gray-600">Vänligen vänta, laddar...</p>
+            </div>
+          ) : (
+            <div className="flex justify-center gap-8 min-w-max">
+              {products.slice(0, 4).map((product) => (
+                <Link key={product.Id} href={`/product/${product.Id}`} className="block inline-block">
+                  <div className="p-6 rounded-lg transform transition-transform hover:scale-105 cursor-pointer">
+                    <img
+                      src={product.ImageUrl}
+                      alt={product.Name}
+                      className="w-full h-56 object-cover rounded-md"
+                    />
+                    <h4 className="text-xl mt-3 text-black text-center">{product.Name}</h4>
+                    <p className="text-gray-700 font-medium mt-2 text-center">{product.Price} SEK</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
 
-      <div className="text-center mt-8">
-        <Link href="/product" className="bg-green-800 text-white px-6 py-3 rounded-md hover:bg-green-900">
-          Se Alla Varor
-        </Link>
-      </div>
-    </main>
+        <div className="text-center mt-8">
+          <Link href="/product" className="bg-green-800 text-white px-6 py-3 rounded-md hover:bg-green-900">
+            Se Alla Varor
+          </Link>
+        </div>
+      </main>
+
       
       {/* 🔹 Inspiration Section */}
       <section className="container mx-auto py-12 border-b border-black">

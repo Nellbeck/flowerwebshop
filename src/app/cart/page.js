@@ -63,35 +63,41 @@ export default function CartPage() {
 
       {/* 🔹 Cart Content */}
       <main className="container mx-auto py-8 flex-grow">
-        <h1 className="font-bold text-center text-2xl text-black m-10">Kundvagn</h1>
+  <h1 className="font-bold text-center text-2xl text-black m-10">Kundvagn</h1>
 
-        {cart.length === 0 ? (
-          <p className="text-black text-lg text-center">Din kundvagn är tom. 🛒</p>
-        ) : (
-          <div className="text-black p-6 rounded-lg shadow-lg">
-            {/* Table Header */}
-            <div className="grid grid-cols-4 font-semibold border-b border-black pb-3 text-lg">
-              <div className="text-left">Produkt</div>
-              <div className="text-center">Antal</div>
-              <div className="text-center">Pris</div>
-              <div className="text-right">Totalt</div>
-            </div>
-
-            {/* Cart Items */}
+  {cart.length === 0 ? (
+    <p className="text-black text-lg text-center">Din kundvagn är tom. 🛒</p>
+  ) : (
+    <div className="text-black p-6 rounded-lg shadow-lg">
+      {/* Cart Table */}
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-full table-auto mb-6 text-center">
+          <thead>
+            <tr className="">
+              <th className="px-4 py-2 text-left">Produkt</th>
+              <th className="px-4 py-2 text-center">Antal</th>
+              <th className="px-4 py-2 text-center">Pris</th>
+              <th className="px-4 py-2 text-right">Totalt</th>
+            </tr>
+          </thead>
+          <tbody>
             {cart.map((item, index) => (
-              <div key={item.Id || index} className="grid grid-cols-4 items-center py-4 border-b border-black">
+              <tr key={item.Id || index} className="border-b">
                 {/* Product Info */}
-                <div className="flex items-center gap-4">
-                  <img src={item.ImageUrl} alt={item.Name} className="w-16 h-16 object-cover rounded-md" />
-                  <span className="text-black">{item.Name}</span>
-                </div>
+                <td className="px-4 py-2 text-left">
+                  <div className="flex items-center gap-4">
+                    <img src={item.ImageUrl} alt={item.Name} className="w-16 h-16 object-cover rounded-md " />
+                    <span className="pr-5">{item.Name}</span>
+                  </div>
+
+                </td>
 
                 {/* Quantity Controls */}
-                <div className="flex items-center justify-center">
+                <td className="px-4 py-2 text-center min-w-50">
                   <button
                     className="px-3 py-1"
                     onClick={() => updateQuantity(item.Id, -1)}
-                    disabled={item.quantity <= 0} // Disable minus if quantity is 0
+                    disabled={item.quantity <= 0}
                   >
                     ➖
                   </button>
@@ -99,37 +105,42 @@ export default function CartPage() {
                   <button
                     className="px-3 py-1"
                     onClick={() => updateQuantity(item.Id, 1)}
-                    disabled={item.quantity >= item.Stock} // Disable plus if quantity exceeds stock
+                    disabled={item.quantity >= item.Stock}
                   >
                     ➕
                   </button>
-                </div>
+                </td>
 
                 {/* Price */}
-                <div className="text-center">{item.Price} SEK</div>
+                <td className="px-4 py-2 text-center">{item.Price} SEK</td>
 
                 {/* Total Price */}
-                <div className="text-right font-semibold">{(item.Price * item.quantity).toFixed(2)} SEK</div>
-              </div>
+                <td className="px-4 py-2 text-right font-semibold">
+                  {(item.Price * item.quantity).toFixed(2)} SEK
+                </td>
+              </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
 
-            {/* 🔹 Total Sum Section */}
-            {cart.length > 0 && (
-              <div className="text-right mt-10">
-                <h2 className="text-2xl font-bold text-black">Totalt: {totalSum} SEK</h2>
-                <button
-                  onClick={handleGoToCheckout}
-                  className="mt-4 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
-                >
-                  Gå till Kassan
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </main>
+      {/* 🔹 Total Sum Section */}
+      {cart.length > 0 && (
+        <div className="text-right mt-10">
+          <h2 className="text-2xl font-bold text-black">Totalt: {totalSum} SEK</h2>
+          <button
+            onClick={handleGoToCheckout}
+            className="mt-4 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800"
+          >
+            Gå till Kassan
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+</main>
 
-      <Footer />
+<Footer />
     </div>
   );
 }
