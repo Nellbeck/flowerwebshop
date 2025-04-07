@@ -20,6 +20,7 @@ export default function CheckoutPage() {
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [selectedDate, setSelectedDate] = useState("");
   const [isTodayDisabled, setIsTodayDisabled] = useState(false);
+  const [showMockPayment, setShowMockPayment] = useState(false);
 
   useEffect(() => {
     const now = new Date();
@@ -127,7 +128,6 @@ const getCoordinates = async (address, city, postalCode) => {
     return { withinDelivery: deliveryFee !== null, fee: deliveryFee };
   };
   
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -154,6 +154,36 @@ const getCoordinates = async (address, city, postalCode) => {
         return;
       }
       setDeliveryFee(fee); // Store the fee for order summary
+    }
+
+    const paymentResponse = await fetch("/api/swish/create-mock-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: totalSum + (deliveryFee || 0) })
+    });
+    
+    const paymentData = await paymentResponse.json();
+    const paymentId = paymentData.paymentId;
+    
+    setShowMockPayment(true);
+
+    let paymentStatus = "PENDING";
+    const maxRetries = 10;
+    let attempts = 0;
+
+    while (paymentStatus === "PENDING" && attempts < maxRetries) {
+      await new Promise((res) => setTimeout(res, 2000)); // Wait 2s
+      const statusResponse = await fetch(`/api/swish/mock-payment-status?id=${paymentId}`);
+      const statusData = await statusResponse.json();
+      paymentStatus = statusData.status;
+      attempts++;
+    }
+
+    if (paymentStatus !== "PAID") {
+      alert("Betalningen misslyckades eller tog för lång tid.");
+      setIsSubmitting(false);
+      setShowMockPayment(false);
+      return;
     }
 
     try {
@@ -386,11 +416,38 @@ const getCoordinates = async (address, city, postalCode) => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Bearbetning..." : "Bekräfta Köp"}
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Bearbetning...
+              </>
+            ) : (
+              "Bekräfta köp med Swish"
+            )}
           </button>
+
         </form>
       </main>
 
