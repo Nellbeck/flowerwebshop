@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -38,11 +39,23 @@ export default function Footer() {
           Integritetspolicy
         </Link>
         </div>
-
       </div>
+
+      <div className="mt-4">
+          <Link href="https://www.swish.nu" passHref>
+              <Image
+                src="/Swish.png"  // Path to your Swish banner
+                alt="Swish Payment"
+                width={80}  // Adjust the width as needed
+                height={50}  // Adjust the height as needed
+                className="mx-auto"  // Centering the banner
+              />
+          </Link>
+        </div>
 
       {/* Copyright text centered below */}
       <p className="text-center mt-6 text-lg">© 2025. Alla rättigheter förbehållna.</p>
+
     </footer>
   );
 }
