@@ -147,7 +147,7 @@ const getCoordinates = async (address, city, postalCode) => {
     if (deliveryOption === "delivery") {
       const { withinDelivery, fee } = await isWithinDeliveryArea(address, city, postalCode);
       if (!withinDelivery) {
-        setErrorMessage("Sorry, your address is outside the delivery area.");
+        setErrorMessage("Vi kan inte göra en hemleverans till denna adress.");
         setIsSubmitting(false);
         setDeliveryOption("pickup");
         setDeliveryFee(0);
@@ -238,11 +238,11 @@ const getCoordinates = async (address, city, postalCode) => {
       localStorage.removeItem("cart");
       setCart([]);
 
-      alert("Purchase successful! Order confirmation has been sent.");
+      alert("Köp lyckades! En orderbekräftelse kommer att skickas till din e-mail.");
       router.push("/");
     } catch (error) {
       console.error("Error during purchase:", error);
-      alert("There was an error processing your order. Please try again.");
+      alert("Något gick fel. Prova igen.");
     }
 
     setIsSubmitting(false);
