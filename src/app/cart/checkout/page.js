@@ -359,7 +359,7 @@ const getCoordinates = async (address, city, postalCode) => {
                     setDeliveryOption("delivery");
                     const { withinDelivery, fee } = await isWithinDeliveryArea(address, city, postalCode);
                     if (!withinDelivery) {
-                      setErrorMessage("Sorry, your address is outside the delivery area.");
+                      setErrorMessage("Hemleverans är inte tillgänglig för den valda adressen.");
                       setDeliveryFee(0);
                       setDeliveryOption("pickup");
                     } else {
